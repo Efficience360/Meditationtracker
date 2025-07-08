@@ -2,58 +2,39 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Méditation Quotidienne – Tracker Fun & Motivant</title>
+  <title>Méditation Quotidienne – Tracker Girly</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
-    /* Light & Dark Mode Variables */
-    :root {
-      --bg-light: linear-gradient(135deg, #FDEB71 0%, #F8D800 100%);
-      --bg-dark: #2C3E50;
-      --text-light: #333;
-      --text-dark: #ECF0F1;
-      --control-bg-light: #FFFFFFCC;
-      --control-bg-dark: #34495ECC;
-      --button-bg: #27AE60;
-      --button-bg-hover: #2ECC71;
-    }
+    /* Fond sombre girly : dégradé violet foncé -> rose */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-light);
-      color: var(--text-light);
+      background: linear-gradient(135deg, #2c003e 0%, #ff6fcf 100%);
+      color: #f8f4ff;
       padding: 20px;
-      transition: background 0.5s, color 0.5s;
       animation: fadeIn 1s ease-in-out;
-    }
-    body.dark {
-      background: var(--bg-dark);
-      color: var(--text-dark);
     }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     h1 {
       text-align: center;
-      color: #D35400;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-      margin-bottom: 5px;
+      color: #ffe1f2;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+      margin-bottom: 10px;
     }
     #quote {
       text-align: center;
       font-style: italic;
       margin-bottom: 20px;
+      color: #ffd1e6;
     }
-    /* Conseils section */
     .tips {
-      background: var(--control-bg-light);
+      background: rgba(0, 0, 0, 0.2);
       padding: 15px;
       border-radius: 12px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transition: background 0.5s;
-    }
-    body.dark .tips {
-      background: var(--control-bg-dark);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
     .tips h2 {
-      color: #2980B9;
+      color: #ffb3dc;
       margin-top: 0;
     }
     .tips ul {
@@ -61,8 +42,40 @@
       line-height: 1.5;
       margin: 0;
       padding-left: 20px;
+      color: #fff;
     }
-    /* Controls and calendar */
+    #intention label {
+      font-weight: bold;
+      color: #ffe1f2;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 20px;
+      border: 2px solid #ffb3dc;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      box-sizing: border-box;
+      margin-top: 5px;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #ffd1e6;
+    }
+    button {
+      background: #ff69b4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #ff85c0;
+      transform: scale(1.05);
+    }
     #controls {
       display: flex;
       gap: 10px;
@@ -71,55 +84,62 @@
       justify-content: center;
       margin-bottom: 20px;
     }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      border-radius: 20px;
-      border: 2px solid #2980B9;
-      box-sizing: border-box;
-      transition: background 0.5s, color 0.5s;
+    #controls input[type=url] {
+      flex: 1;
+      min-width: 200px;
     }
-    button {
-      background: var(--button-bg);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.5s;
+    iframe {
+      width:100%;
+      height:200px;
+      margin-top:10px;
+      border:none;
+      border-radius:12px;
+      box-shadow:0 4px 6px rgba(0,0,0,0.3);
     }
-    button:hover { background: var(--button-bg-hover); transform: scale(1.05); }
-    iframe { width:100%; height:200px; margin-top:10px; border:none; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.1); }
-    #calendar { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin:20px 0; }
-    .day { background:#FFF; border-radius:8px; padding:10px; position:relative; cursor:pointer; transition:background 0.3s; }
-    .day.checked { background:#A9DFBF; }
-    .day.missed { background:#F5B7B1; }
+    #calendar {
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+      margin:20px 0;
+    }
+    .day {
+      background: rgba(255,255,255,0.1);
+      border-radius:8px;
+      padding:10px;
+      position:relative;
+      cursor:pointer;
+      transition:background 0.3s;
+      color: #fff;
+    }
+    .day.checked { background:#d86daa; }
+    .day.missed { background:#4a005c; }
     .day .date { position:absolute; top:5px; right:8px; font-size:0.8em; }
-    #streak { text-align:center; font-weight:bold; margin-top:10px; color:#8E44AD; }
-    /* Intentions field */
-    #intention { margin-bottom:20px; }
-    #intention label { font-weight:bold; }
+    #streak {
+      text-align:center;
+      font-weight:bold;
+      margin-top:10px;
+      color:#ffe1f2;
+    }
   </style>
 </head>
 <body>
-  <h1>🧘 Habitude Méditation Quotidienne</h1>
-  <p id="quote">“Le calme est la clé pour débloquer ta force intérieure.” – Inconnu</p>
+  <h1>🧘 Habitude Méditation Girly</h1>
+  <p id="quote">“Le calme est la clé pour débloquer ta force intérieure.”</p>
 
-  <!-- Intention du jour -->
   <div id="intention">
     <label for="todayIntention">🌟 Intention du jour :</label>
     <input type="text" id="todayIntention" placeholder="Écris ton intention pour aujourd'hui..." />
   </div>
 
   <div class="tips">
-    <h2>💡 Conseils pour une méditation efficace</h2>
+    <h2>💡 Conseils pour une méditation fun</h2>
     <ul>
-      <li>Choisis un <strong>endroit calme</strong> et confortable.</li>
-      <li>Commence par <strong>5 minutes</strong>, puis augmente progressivement.</li>
-      <li>Concentre-toi sur <strong>ta respiration</strong> ou un <strong>mantra</strong>.</li>
-      <li>Laisse passer les pensées sans t'y attacher.</li>
-      <li>Utilise <strong>ta musique préférée</strong> pour t'aider à te recentrer.</li>
-      <li>Souris et sois bienveillant·e envers toi-même.</li>
+      <li>Choisis un endroit **doux et cosy**.</li>
+      <li>Porte des **vêtements confortables**.</li>
+      <li>Utilise un **coussin moelleux** ou un tapis douillet.</li>
+      <li>Laisse-toi guider par ta **respiration**.</li>
+      <li>Écoute une **playlist chill** pour t’aider.</li>
+      <li>Souris, c’est ton moment 🌸.</li>
     </ul>
   </div>
 
@@ -128,7 +148,6 @@
            value="https://youtu.be/N4QPvDVbRY0?si=3tyvv9sNpO0UvlSu" onchange="reloadMusic()" />
     <button onclick="playMusic()">▶️ Écouter</button>
     <button onclick="exportPDF()">📄 Export PDF</button>
-    <button id="toggleDark" onclick="toggleDarkMode()">🌙 Mode Sombre</button>
   </div>
   <iframe id="player" src="" allowfullscreen></iframe>
 
@@ -144,7 +163,7 @@
     const key = `meditation-${year}-${month}`;
     let state = JSON.parse(localStorage.getItem(key) || "{}");
 
-    // Grid generation
+    // Génération du calendrier
     for(let i=0;i<firstDay;i++) cal.appendChild(document.createElement('div'));
     for(let d=1; d<=daysInMonth; d++) {
       const div = document.createElement('div');
@@ -179,37 +198,30 @@
     }
     updateStreak();
 
-    // Music player
+    // Musique
     function reloadMusic(){
       const url = document.getElementById('musicLink').value;
       const id = url.match(/(?:v=|\.be\/)([^&]+)/);
-      if(id && id[1]) document.getElementById('player').src = 'https://www.youtube.com/embed/'+id[1];
+      if(id && id[1]) {
+        document.getElementById('player').src = 'https://www.youtube.com/embed/'+id[1];
+      }
     }
     function playMusic(){ reloadMusic(); }
 
-    // Dark mode toggle
-    function toggleDarkMode(){
-      document.body.classList.toggle('dark');
-    }
-    // Auto dark mode after 18h
-    if(today.getHours() >= 18 || today.getHours() < 6){
-      document.body.classList.add('dark');
-    }
-
-    // PDF export
+    // Export PDF
     function exportPDF(){
       const intention = document.getElementById('todayIntention').value;
-      // Temporarily add intention to PDF capture
-      const intentDisplay = document.createElement('p');
-      intentDisplay.textContent = `Intention du jour : ${intention}`;
-      intentDisplay.style.fontWeight = 'bold';
-      document.getElementById('capture')?.prepend(intentDisplay);
+      const pIntent = document.createElement('p');
+      pIntent.textContent = `Intention du jour : ${intention}`;
+      pIntent.style.fontWeight = 'bold';
+      pIntent.style.color = '#ffe1f2';
+      document.body.prepend(pIntent);
       html2pdf().from(document.body).set({
         margin:0.5,
         filename:`meditation_${year}_${month+1}.pdf`,
         html2canvas:{scale:2}
-      }).save().then(()=>{
-        intentDisplay.remove();
+      }).save().then(() => {
+        pIntent.remove();
       });
     }
     reloadMusic();
