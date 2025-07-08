@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Méditation Quotidienne – Tracker Fun & Motivant</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    /* Ambiance colorée */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #FDEB71 0%, #F8D800 100%);
+      color: #333;
+      padding: 20px;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    h1 {
+      text-align: center;
+      color: #D35400;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+    #quote {
+      text-align: center;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+    /* Conseils section */
+    .tips {
+      background: #FFFFFFCC;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .tips h2 {
+      color: #2980B9;
+    }
+    .tips ul {
+      list-style: disc inside;
+      line-height: 1.5;
+    }
+    /* Controls and calendar */
+    #controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    input[type=url] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 20px;
+      border: 2px solid #2980B9;
+    }
+    button {
+      background: #27AE60;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      background: #2ECC71;
+      transform: scale(1.05);
+    }
+    iframe {
+      width: 100%;
+      height: 200px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    #calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin: 20px 0;
+    }
+    .day {
+      background: #FFF;
+      border-radius: 8px;
+      padding: 10px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .day.checked { background: #A9DFBF; }
+    .day.missed { background: #F5B7B1; }
+    .day .date { position: absolute; top: 5px; right: 8px; font-size: 0.8em; }
+    #streak {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 10px;
+      color: #8E44AD;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧘 Habitude Méditation Quotidienne</h1>
+  <p id="quote">“Le calme est la clé pour débloquer ta force intérieure.” – Inconnu</p>
+
+  <div class="tips">
+    <h2>💡 Conseils pour une méditation efficace</h2>
+    <ul>
+      <li>Choisis un **endroit calme** et confortable.</li>
+      <li>Commence par **5 minutes**, puis augmente progressivement.</li>
+      <li>Concentre-toi sur **ta respiration** ou un **mantra**.</li>
+      <li>Laisse passer les pensées sans t'y attacher.</li>
+      <li>Utilise **ta musique préférée** pour t'aider à te recentrer.</li>
+      <li>Souris et sois bienveillant·e envers toi-même.</li>
+    </ul>
+  </div>
+
+  <div id="controls">
+    <input type="url" id="musicLink" placeholder="Lien YouTube pour ta méditation"
+           value="https://youtu.be/N4QPvDVbRY0?si=3tyvv9sNpO0UvlSu" onchange="reloadMusic()" />
+    <button onclick="playMusic()">▶️ Écouter</button>
+    <button onclick="exportPDF()">📄 Export PDF</button>
+  </div>
+  <iframe id="player" src="" allowfullscreen></iframe>
+
+  <div id="calendar"></div>
+  <p id="streak">Série actuelle : 0 jours</p>
+
+  <script>
+    const today = new Date();
+    const year = today.getFullYear(), month = today.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+    const cal = document.getElementById('calendar');
+    const key = `meditation-${year}-${month}`;
+    let state = JSON.parse(localStorage.getItem(key) || "{}");
+
+    // Génère cases vides + jours
+    for(let i=0;i<firstDay;i++) cal.appendChild(document.createElement('div'));
+    for(let d=1; d<=daysInMonth; d++) {
+      const div = document.createElement('div');
+      div.className = 'day';
+      div.innerHTML = `<span class="date">${d}</span>`;
+      if(state[d] === 'checked') div.classList.add('checked');
+      if(state[d] === 'missed') div.classList.add('missed');
+      div.onclick = () => {
+        if(div.classList.contains('checked')) {
+          div.classList.replace('checked','missed');
+          state[d] = 'missed';
+        } else if(div.classList.contains('missed')) {
+          div.classList.remove('missed');
+          delete state[d];
+        } else {
+          div.classList.add('checked');
+          state[d] = 'checked';
+        }
+        localStorage.setItem(key, JSON.stringify(state));
+        updateStreak();
+      };
+      cal.appendChild(div);
+    }
+
+    function updateStreak(){
+      let streak = 0;
+      for(let d = today.getDate(); d>0; d--){
+        if(state[d] === 'checked') streak++;
+        else break;
+      }
+      document.getElementById('streak').textContent = `Série actuelle : ${streak} jour${streak>1?'s':''}`;
+    }
+    updateStreak();
+
+    function reloadMusic(){
+      const url = document.getElementById('musicLink').value;
+      const id = url.match(/(?:v=|\.be\/)([^&]+)/);
+      if(id && id[1]) document.getElementById('player').src = 'https://www.youtube.com/embed/'+id[1];
+    }
+    function playMusic(){ reloadMusic(); }
+
+    function exportPDF(){
+      html2pdf().from(document.body).set({
+        margin:0.5,
+        filename:`meditation_${year}_${month+1}.pdf`,
+        html2canvas:{scale:2}
+      }).save();
+    }
+    reloadMusic();
+  </script>
+</body>
+</html>
